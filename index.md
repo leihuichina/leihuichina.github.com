@@ -1,14 +1,21 @@
-### Welcome to GitHub Pages.
-This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here [using GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), select a template crafted by a designer, and publish. After your page is generated, you can check out the new `gh-pages` branch locally. If you’re using GitHub Desktop, simply sync your repository and you’ll see the new branch.
 
-### Designer Templates
-We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.
+#自定义相机无法使用的问题描述及解决方案
 
-### Creating pages manually
-If you prefer to not use the automatic generator, push a branch named `gh-pages` to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.
+##描述:
+    使用AVCaptureSession等相关自定义相机类的时候,遇到了,无法开始录像,结束录像,代理方法统统不走
+##解决方案:使用的时候需要手动调用 [_captureSession startRunning];
 
-### Authors and Contributors
-You can @mention a GitHub username to generate a link to their profile. The resulting `<a>` element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (@defunkt), PJ Hyett (@pjhyett), and Tom Preston-Werner (@mojombo) founded GitHub.
+#修改UIDatePickerView的文字颜色和背景色
+	//设置成白色
+	[selectionDatePicker setValue:[UIColor whiteColor] forKey:@"textColor"];
+	
+用KVC 强行给它设置成了白色,感觉已经解决需求,但是突然又发现了一个问题:每次滑到今天的日期,文字颜色又TM变成了黑色,不要慌,这时候方法混淆又可以登场了 首先我们找到需要混淆的方法  setHighlightsToday,就是它 然后强制混淆这个方法.给他设置一个NO,这样就完成了:
 
-### Support or Contact
-Having trouble with Pages? Check out our [documentation](https://help.github.com/pages) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+	SEL selector = NSSelectorFromString(@"setHighlightsToday:");
+        	NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDatePicker instanceMethodSignatureForSelector:selector]];
+        	BOOL no = NO;
+    		[invocation setSelector:selector];
+      	 [invocation setArgument:&no atIndex:2];
+        [invocation invokeWithTarget:selectionDatePicker];
+
+
